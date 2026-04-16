@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 
 import db from "@/db/drizzle";
 import { getIsAdmin } from "@/lib/admin";
-import { courses } from "@/db/schema";
+import { units } from "@/db/schema";
 
 
-type CourseInsert = typeof courses.$inferInsert;
-type CourseSelect = typeof courses.$inferSelect;
+type UnitInsert = typeof units.$inferInsert;
+type UnitSelect = typeof units.$inferSelect;
 
 const safeJson = <T>(data: T) => {
   return NextResponse.json(structuredClone(data));
@@ -17,7 +17,7 @@ export const GET = async () => {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const data: CourseSelect[] = await db.query.courses.findMany();
+  const data: UnitSelect[] = await db.query.units.findMany();
 
   return safeJson(data);
 };
@@ -27,10 +27,10 @@ export const POST = async (req: Request) => {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const body: CourseInsert = await req.json();
+  const body: UnitInsert = await req.json();
 
   const data = await db
-    .insert(courses)
+    .insert(units)
     .values({
       ...body,
     })

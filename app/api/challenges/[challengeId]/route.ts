@@ -1,10 +1,10 @@
 import db from "@/db/drizzle";
-import { courses } from "@/db/schema";
+import { challenges } from "@/db/schema";
 import { getIsAdmin } from "@/lib/admin";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-type Params = Promise<{ courseId: string }>;
+type Params = Promise<{ challengeId: string }>;
 
 const safeJson = <T>(data: T) => {
   return NextResponse.json(structuredClone(data));
@@ -18,10 +18,10 @@ export const GET = async (
     return new NextResponse("Unauthorized", { status: 403 });
   }
 
-  const { courseId } = await params;
+  const { challengeId } = await params;
 
-  const data = await db.query.courses.findFirst({
-    where: eq(courses.id, Number(courseId)),
+  const data = await db.query.challenges.findFirst({
+    where: eq(challenges.id, Number(challengeId)),
   });
 
   return safeJson(data);
@@ -35,15 +35,15 @@ export const PUT = async (
     return new NextResponse("Unauthorized", { status: 403 });
   }
 
-  const { courseId } = await params;
+  const { challengeId } = await params;
   const body = await req.json();
 
   const data = await db
-    .update(courses)
+    .update(challenges)
     .set({
       ...body,
     })
-    .where(eq(courses.id, Number(courseId)))
+    .where(eq(challenges.id, Number(challengeId)))
     .returning();
 
   return safeJson(data[0]);
@@ -57,11 +57,11 @@ export const DELETE = async (
     return new NextResponse("Unauthorized", { status: 403 });
   }
 
-  const { courseId } = await params;
+  const { challengeId } = await params;
 
   const data = await db
-    .delete(courses)
-    .where(eq(courses.id, Number(courseId)))
+    .delete(challenges)
+    .where(eq(challenges.id, Number(challengeId)))
     .returning();
 
   return safeJson(data[0]);

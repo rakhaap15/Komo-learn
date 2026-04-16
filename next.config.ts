@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
-import { headers } from "next/headers";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: false,
   devIndicators: {
     position: "bottom-right", // top-right, bottom-right, top-left, bottom-left
   },
