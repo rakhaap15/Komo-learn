@@ -129,7 +129,7 @@ export const Quiz = ({
 
                 //this is a practice
                 if (initialPercentage === 100) {
-                    setHearts((prev) => Math.min(prev + 1, 5));
+                    setHearts((prev) => Math.min(prev + 1, 2));
                 }
               })
               .catch(() => toast.error("Something went wrong, please try again..."))

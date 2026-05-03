@@ -4,37 +4,26 @@ import db from "@/db/drizzle";
 import { getIsAdmin } from "@/lib/admin";
 import { units } from "@/db/schema";
 
-
-type UnitInsert = typeof units.$inferInsert;
-type UnitSelect = typeof units.$inferSelect;
-
-const safeJson = <T>(data: T) => {
-  return NextResponse.json(structuredClone(data));
-};
-
 export const GET = async () => {
-  if (!(await getIsAdmin())) {
+  if (!getIsAdmin()) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const data: UnitSelect[] = await db.query.units.findMany();
+  const data = await db.query.units.findMany();
 
-  return safeJson(data);
+  return NextResponse.json(data);
 };
 
 export const POST = async (req: Request) => {
-  if (!(await getIsAdmin())) {
+  if (!getIsAdmin()) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const body: UnitInsert = await req.json();
+  const body = await req.json();
 
-  const data = await db
-    .insert(units)
-    .values({
-      ...body,
-    })
-    .returning();
+  const data = await db.insert(units).values({
+    ...body,
+  }).returning();
 
-  return safeJson(data[0]);
+  return NextResponse.json(data[0]);
 };

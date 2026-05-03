@@ -1,68 +1,51 @@
-import db from "@/db/drizzle";
-import { units } from "@/db/schema";
-import { getIsAdmin } from "@/lib/admin";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-type Params = Promise<{ unitId: string }>;
-
-const safeJson = <T>(data: T) => {
-  return NextResponse.json(structuredClone(data));
-};
+import db from "@/db/drizzle";
+import { units } from "@/db/schema";
+import { getIsAdmin } from "@/lib/admin";
 
 export const GET = async (
   req: Request,
-  { params }: { params: Params }
+  { params }: { params: { unitId: number } },
 ) => {
-  if (!(await getIsAdmin())) {
+  if (!getIsAdmin()) {
     return new NextResponse("Unauthorized", { status: 403 });
   }
 
-  const { unitId } = await params;
-
   const data = await db.query.units.findFirst({
-    where: eq(units.id, Number(unitId)),
+    where: eq(units.id, params.unitId),
   });
 
-  return safeJson(data);
+  return NextResponse.json(data);
 };
 
 export const PUT = async (
   req: Request,
-  { params }: { params: Params }
+  { params }: { params: { unitId: number } },
 ) => {
-  if (!(await getIsAdmin())) {
+  if (!getIsAdmin()) {
     return new NextResponse("Unauthorized", { status: 403 });
   }
 
-  const { unitId } = await params;
   const body = await req.json();
+  const data = await db.update(units).set({
+    ...body,
+  }).where(eq(units.id, params.unitId)).returning();
 
-  const data = await db
-    .update(units)
-    .set({
-      ...body,
-    })
-    .where(eq(units.id, Number(unitId)))
-    .returning();
-
-  return safeJson(data[0]);
+  return NextResponse.json(data[0]);
 };
 
 export const DELETE = async (
   req: Request,
-  { params }: { params: Params }
+  { params }: { params: { unitId: number } },
 ) => {
-  if (!(await getIsAdmin())) {
+  if (!getIsAdmin()) {
     return new NextResponse("Unauthorized", { status: 403 });
   }
 
-  const { unitId } = await params;
+  const data = await db.delete(units)
+    .where(eq(units.id, params.unitId)).returning();
 
-  const data = await db
-    .delete(units)
-    .where(eq(units.id, Number(unitId)))
-    .returning();
-
-  return safeJson(data[0]);
+  return NextResponse.json(data[0]);
 };

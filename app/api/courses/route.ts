@@ -4,37 +4,26 @@ import db from "@/db/drizzle";
 import { getIsAdmin } from "@/lib/admin";
 import { courses } from "@/db/schema";
 
-
-type CourseInsert = typeof courses.$inferInsert;
-type CourseSelect = typeof courses.$inferSelect;
-
-const safeJson = <T>(data: T) => {
-  return NextResponse.json(structuredClone(data));
-};
-
 export const GET = async () => {
-  if (!(await getIsAdmin())) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+    if (!getIsAdmin()) {
+        return new NextResponse("Unauthorized", { status: 401});
+    }
 
-  const data: CourseSelect[] = await db.query.courses.findMany();
+    const data = await db.query.courses.findMany();
 
-  return safeJson(data);
+    return NextResponse.json(data);
 };
 
 export const POST = async (req: Request) => {
-  if (!(await getIsAdmin())) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+    if (!getIsAdmin()) {
+        return new NextResponse("Unauthorized", { status: 401});
+    }
 
-  const body: CourseInsert = await req.json();
+    const body = await req.json();
 
-  const data = await db
-    .insert(courses)
-    .values({
-      ...body,
-    })
-    .returning();
+    const data = await db.insert(courses).values({
+        ...body,
+    }).returning();
 
-  return safeJson(data[0]);
+    return NextResponse.json(data[0]);
 };

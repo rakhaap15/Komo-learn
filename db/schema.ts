@@ -101,7 +101,7 @@ export const userProgress = pgTable("user_progress", {
     userImageSrc: text("user_image_src").notNull().default("/komo mascots.svg"),
     activeCourseId: integer("active_course_id").references(() => courses.
     id, { onDelete: "cascade" }),
-    hearts: integer("hearts").notNull().default(5),
+    hearts: integer("hearts").notNull().default(2),
     points: integer("points").notNull().default(0),
 });
 

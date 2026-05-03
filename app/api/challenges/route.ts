@@ -4,37 +4,26 @@ import db from "@/db/drizzle";
 import { getIsAdmin } from "@/lib/admin";
 import { challenges } from "@/db/schema";
 
-
-type ChallengeInsert = typeof challenges.$inferInsert;
-type ChallengeSelect = typeof challenges.$inferSelect;
-
-const safeJson = <T>(data: T) => {
-  return NextResponse.json(structuredClone(data));
-};
-
 export const GET = async () => {
-  if (!(await getIsAdmin())) {
+  if (!getIsAdmin()) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const data: ChallengeSelect[] = await db.query.challenges.findMany();
+  const data = await db.query.challenges.findMany();
 
-  return safeJson(data);
+  return NextResponse.json(data);
 };
 
 export const POST = async (req: Request) => {
-  if (!(await getIsAdmin())) {
+  if (!getIsAdmin()) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const body: ChallengeInsert = await req.json();
+  const body = await req.json();
 
-  const data = await db
-    .insert(challenges)
-    .values({
-      ...body,
-    })
-    .returning();
+  const data = await db.insert(challenges).values({
+    ...body,
+  }).returning();
 
-  return safeJson(data[0]);
+  return NextResponse.json(data[0]);
 };

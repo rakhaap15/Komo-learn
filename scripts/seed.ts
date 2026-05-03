@@ -21,6 +21,7 @@ const main = async () => {
         await db.delete(schema.challengeProgress);
         await db.delete(schema.userSubscription);
 
+        //courses
         await db.insert(schema.courses).values([
             {
                 id:1,
@@ -44,6 +45,7 @@ const main = async () => {
             },
         ]);
 
+        //units
         await db.insert(schema.units).values([
             {
                 id: 1,
@@ -54,6 +56,7 @@ const main = async () => {
             }
         ]);
 
+        //units
         await db.insert(schema.lessons).values([
             {
                 id: 1,
@@ -87,6 +90,7 @@ const main = async () => {
             },
         ]);
 
+        //question
         await db.insert(schema.challenges).values([
             {
                 id: 1,
@@ -111,6 +115,7 @@ const main = async () => {
             },
         ]);
 
+        //answer
         await db.insert(schema.challengeOptions).values([
             {
                 challengeId: 1, //Mana di bawah ini kata yang Menunjukan "Laki-Laki"

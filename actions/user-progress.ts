@@ -119,7 +119,7 @@ export const refillHearts = async () => {
         throw new Error("User progress not found");
     }
 
-    if (currentUserProgress.hearts === 5) {
+    if (currentUserProgress.hearts === 2) {
         throw new Error("Hearts are already full");
     }
 
@@ -128,7 +128,7 @@ export const refillHearts = async () => {
     }
 
     await db.update(userProgress).set({
-        hearts: 5,
+        hearts: 2,
         points: currentUserProgress.points - POINTS_TO_REFILL,
     }).where(eq(userProgress.userId, currentUserProgress.userId));
 

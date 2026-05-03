@@ -4,13 +4,15 @@ import { redirect } from "next/navigation";
 
 const App = dynamic(() => import("./app"));
 
-const AdminPage = () => {
-    if (!getIsAdmin) {
+const AdminPage = async () => {
+    const isAdmin = await getIsAdmin();
+
+    if (!isAdmin) {
         redirect("/");
     }
 
-    return ( 
-    <App />
+    return (
+        <App/>
     );
 };
 
