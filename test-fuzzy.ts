@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { fuzzyDecision } from "./lib/fuzzy";
 
 const tests = [

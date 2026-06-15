@@ -7,9 +7,11 @@ import {
     lessons, 
     units, 
     userProgress, 
-    userSubscription
+    userSubscription,
+    testResults,
+    questionResults,
 } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 
 export const getUserProgress = cache(async () => {
@@ -260,3 +262,38 @@ export const getTopTenUser = cache(async () => {
 
     return data;
 });
+
+export const getUserReport = async () => {
+  const { userId } = await auth();
+
+  if (!userId) return null;
+
+  // 1. Ambil test terakhir
+  const latestTest = await db.query.testResults.findFirst({
+    where: eq(testResults.userId, userId),
+    orderBy: desc(testResults.id),
+  });
+
+  if (!latestTest) return null;
+
+  // 2. Ambil detail soal
+  const questions = await db
+    .select()
+    .from(questionResults)
+    .where(eq(questionResults.testResultId, latestTest.id));
+
+  // 3. Return format
+  return {
+    totalTime: latestTest.timeSpent,
+    score: latestTest.score,
+    correctCount: latestTest.correctCount,
+    totalQuestions: latestTest.totalQuestions,
+    questions: questions.map(
+      (q: typeof questionResults.$inferSelect) => ({
+        id: q.id,
+        timeSpent: q.timeSpent,
+        isCorrect: q.isCorrect,
+      })
+    ),
+  };
+};

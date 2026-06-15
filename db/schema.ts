@@ -144,3 +144,11 @@ export const testResults = pgTable("test_results", {
   level: text("level").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const questionResults = pgTable("quest_results", {
+  id: serial("id").primaryKey(),
+  testResultId: integer("test_result_id").notNull(),
+  questionId: integer("question_id").notNull(),
+  timeSpent: integer("time_spent").notNull(),
+  isCorrect: boolean("is_correct").notNull(),
+});

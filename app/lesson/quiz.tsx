@@ -11,7 +11,18 @@ import { ResultCard } from "./result-card";
 import { useRouter } from "next/navigation";
 import { saveResult } from "@/actions/save-result";
 import Confetti from "react-confetti";
-import { useAudio,useWindowSize } from "react-use";
+import { useAudio, useWindowSize } from "react-use";
+import { addPoints } from "@/actions/add-points";
+
+type AttemptRow = {
+  index: number;
+  challengeId: number;
+  type: "SELECT" | "INPUT" | "ASSIST";
+  isCorrect: boolean;
+  timeSpent: number;
+  userAnswer: string;
+  correctAnswer: string;
+};
 
 type Props = {
   initialPercentage: number;
@@ -21,6 +32,7 @@ type Props = {
     completed: boolean;
     challengeOptions: typeof challengeOptions.$inferSelect[];
   })[];
+  // legacy prop dari beberapa halaman (tidak dipakai di komponen ini)
 };
 
 function getLevel(score: number, time: number) {
@@ -112,6 +124,13 @@ export const Quiz = ({
   const challenge = challenges[activeIndex];
   const options = challenge?.challengeOptions ?? [];
 
+  const [attemptRows, setAttemptRows] = useState<AttemptRow[]>([]);
+  const questionStartAtRef = useRef<number>(0);
+
+  useEffect(() => {
+    questionStartAtRef.current = Date.now();
+  }, [activeIndex]);
+
   // 🔊 AUDIO
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -127,7 +146,8 @@ export const Quiz = ({
   // 🔥 CONTINUE BUTTON LOGIC
   // =========================
   const onContinue = () => {
-  if (!challenge) return;
+    if (!challenge) return;
+
 
   console.log("CLICK");
 
@@ -173,6 +193,9 @@ export const Quiz = ({
       setCorrectCount((prev) => prev + 1);
       setPercentage((prev) => prev + 100 / challenges.length);
       setStatus("correct");
+      // tambah points saat jawaban benar
+      addPoints(10).catch(() => {});
+
     } else {
       console.log("❌ SALAH INPUT");
       setHearts((prev) => Math.max(prev - 1, 0));
@@ -202,6 +225,9 @@ export const Quiz = ({
     setCorrectCount((prev) => prev + 1);
     setPercentage((prev) => prev + 100 / challenges.length);
     setStatus("correct");
+    // tambah points saat jawaban benar
+    addPoints(10).catch(() => {});
+
   } else {
     console.log("❌ SALAH SELECT");
     setHearts((prev) => Math.max(prev - 1, 0));
@@ -249,6 +275,7 @@ export const Quiz = ({
 
                 <div className="flex flex-col gap-y-4 lg:gap-y-8 max-w-lg mx-auto text-center items-center justify-center h-full">
 
+
                     <Image
                         src="/finish.svg"
                         alt="finish"
@@ -270,14 +297,14 @@ export const Quiz = ({
                     </h1>
 
                     <div className="flex flex-col gap-4 w-full">
-
-                        <div className="flex items-center gap-x-4 w-full">
+                            <div className="flex items-center gap-x-4 w-full">
                             <ResultCard variant="score" value={score} />
                             <ResultCard
                                 variant="time"
                                 value={Math.floor(timeSpent / 60)}
                             />
                         </div>
+
 
                         <div className="flex items-center gap-x-4 w-full">
                             <ResultCard variant="level" value={level} />

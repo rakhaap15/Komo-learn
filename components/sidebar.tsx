@@ -47,6 +47,11 @@ export const Sidebar = ({ className }: Props) => {
                 href="/shop"
                 iconSrc="/shop.svg"
                 />
+                <SidebarItem 
+                label="Report" 
+                href="/laporan"
+                iconSrc="/report.svg"
+                />
             </div>
             <div className="p-4">
                 <ClerkLoading>
@@ -54,10 +59,7 @@ export const Sidebar = ({ className }: Props) => {
                 </ClerkLoading>
 
                 <ClerkLoaded>
-                    <UserButton
-                    mode="modal"
-                    forceRedirectUrl="/learn" 
-                    />
+                    <UserButton />
                 </ClerkLoaded>
             </div>
         </div>

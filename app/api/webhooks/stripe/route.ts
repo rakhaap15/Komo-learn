@@ -9,7 +9,8 @@ import { userSubscription } from "@/db/schema";
 
 export async function POST(req: Request) {
   const body = await req.text();
-  const signature = headers().get("Stripe-Signature") as string;
+  const hdrs = await headers();
+  const signature = hdrs.get("Stripe-Signature") as string;
 
   let event: Stripe.Event;
 
@@ -19,8 +20,9 @@ export async function POST(req: Request) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!,
     );
-  } catch(error: any) {
-    return new NextResponse(`Webhook error: ${error.message}`, {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown";
+    return new NextResponse(`Webhook error: ${message}`, {
       status: 400,
     });
   }
@@ -42,7 +44,8 @@ export async function POST(req: Request) {
       stripeCustomerId: subscription.customer as string,
       stripePriceId: subscription.items.data[0].price.id,
       stripeCurrentPeriodEnd: new Date(
-        subscription.current_period_end * 1000,
+        // stripe types mismatch; access runtime value
+        (subscription as unknown as { current_period_end: number }).current_period_end * 1000,
       ),
     });
   }
@@ -55,7 +58,7 @@ export async function POST(req: Request) {
     await db.update(userSubscription).set({
       stripePriceId: subscription.items.data[0].price.id,
       stripeCurrentPeriodEnd: new Date(
-        subscription.current_period_end * 1000,
+        (subscription as unknown as { current_period_end: number }).current_period_end * 1000,
       ),
     }).where(eq(userSubscription.stripeSubscriptionId, subscription.id))
   }
