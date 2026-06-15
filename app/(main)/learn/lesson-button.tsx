@@ -26,7 +26,7 @@ export const LessonButton = ({
     current,
     percentage
 }: Props) => {
-    const cycleLength = 8;
+    /*const cycleLength = 8;
     const cycleIndex = index % cycleLength;
 
     let indentationLevel;
@@ -40,14 +40,15 @@ export const LessonButton = ({
     } else {
         indentationLevel = cycleIndex - 8;
     }
+    */
 
-    const rightPosition = indentationLevel * 40;
+    const rightPosition = 0; //indentationLevel * 40;
 
     const isFirst = index === 0;
     const isLast = index === totalCount;
     const isCompleted = !current && !locked;
 
-    const Icon = isCompleted ? Check : isLast ? Crown : Star;
+    const Icon = /*isCompleted ? Check : isLast ?*/ Crown /*: null*/ ;
 
     const href = isCompleted ? `/lesson/${id}` : "/lesson";
 

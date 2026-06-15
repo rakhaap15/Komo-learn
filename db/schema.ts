@@ -43,12 +43,23 @@ export const lessonsRelations = relations(lessons, ({ one, many }) => ({
     challenges: many(challenges),
 }));
 
-export const challengesEnum = pgEnum("type", ["SELECT", "ASSIST"]); //TODO: Merangkai
+export const challengeCategoryEnum = pgEnum("category", [
+  "VOCAB",
+  "LISTENING",
+  "READING",
+  "GRAMMAR",
+]);
+
+export const challengesEnum = pgEnum("type", ["SELECT", "ASSIST","INPUT"]); //TODO: Merangkai
 
 export const challenges = pgTable("challenges", {
     id: serial("id").primaryKey(),
     lessonsId: integer("lesson_id").references(() => lessons.id, { onDelete: "cascade" }).notNull(),
     type: challengesEnum("type").notNull(),
+    category: challengeCategoryEnum("category").notNull(),
+    imageSrc: text("image_src"),
+    audioSrc: text("audio_src"),
+    passage: text("passage"),
     question: text("question").notNull(),
     order: integer("order").notNull(),
 });
@@ -120,4 +131,16 @@ export const userSubscription = pgTable("user_subscription", {
     stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
     stripePriceId: text("stripe_price_id").notNull(),
     stripeCurrentPeriodEnd: timestamp("stripe_current_period_end").notNull(),
+});
+
+export const testResults = pgTable("test_results", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  name: text("name").notNull(),
+  score: integer("score").notNull(),
+  timeSpent: integer("time_spent").notNull(),
+  correctCount: integer("correct_count").notNull(),
+  totalQuestions: integer("total_questions").notNull(),
+  level: text("level").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
 });

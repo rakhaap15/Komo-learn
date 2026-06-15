@@ -58,7 +58,8 @@ export const upsertChallengeProgress = async (challengeId: number) => {
         );
 
         await db.update(userProgress).set({
-            hearts: Math.min(currentUserProgress.hearts + 1, 2),
+            hearts: Math.min(currentUserProgress.hearts + 1, 5),
+            points: currentUserProgress.points + 10,
         }).where(eq(userProgress.userId, userId));
 
         revalidatePath("/learn");
@@ -75,7 +76,9 @@ export const upsertChallengeProgress = async (challengeId: number) => {
         completed: true,
     });
 
-    // Points updated only at level finish via fuzzy Mamdani
+    await db.update(userProgress).set({
+        points: currentUserProgress.points + 10,
+    }).where(eq(userProgress.userId, userId));
 
         revalidatePath("/learn");
         revalidatePath("/lesson");

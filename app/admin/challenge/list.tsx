@@ -1,11 +1,20 @@
-import { Datagrid, List, TextField, ReferenceField, NumberField, SelectField } from "react-admin";
+import {
+  Datagrid,
+  List,
+  TextField,
+  ReferenceField,
+  NumberField,
+  SelectField,
+} from "react-admin";
 
 export const ChallengeList = () => {
   return (
     <List>
       <Datagrid rowClick="edit">
         <TextField source="id" />
+
         <TextField source="question" />
+
         <SelectField
           source="type"
           choices={[
@@ -16,10 +25,17 @@ export const ChallengeList = () => {
             {
               id: "ASSIST",
               name: "ASSIST",
-            }
+            },
           ]}
         />
-        <ReferenceField source="lessonId" reference="lessons" />
+
+        <ReferenceField
+          source="lessonId"
+          reference="lessons"
+        >
+          <TextField source="title" />
+        </ReferenceField>
+
         <NumberField source="order" />
       </Datagrid>
     </List>
