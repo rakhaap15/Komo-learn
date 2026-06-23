@@ -61,9 +61,9 @@ export const Items = ({
             </div>
             <Button
                 onClick={onRefillHearts}
-                disabled={pending || hearts === 5 || points < POINTS_TO_REFILL}
+                disabled={pending || hearts === 2 || points < POINTS_TO_REFILL}
             >
-                {hearts === 5
+                {hearts === 2
                   ? "full"
                   : (
                     <div className="flex items-center">

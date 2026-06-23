@@ -77,7 +77,7 @@ const main = async () => {
                 imageSrc:'/vocab/apple.svg',
                 question: 'What is "apple"?',
             },
-            /*
+
             {
                 id: 2,
                 lessonsId: 1, //vocab
@@ -114,6 +114,7 @@ const main = async () => {
                 imageSrc:'/vocab/teacher.svg',
                 question: 'Meaning of "teacher":....',
             },
+            /*
             {
                 id: 6,
                 lessonsId: 1, //vocab
@@ -646,7 +647,6 @@ const main = async () => {
                 correct: false,
                 text: "Animal",
             },
-            /*
             //Question 2
             {
                 challengeId: 2, 
@@ -714,6 +714,7 @@ const main = async () => {
                 correct: false,
                 text: "Driver",
             },
+            /*
 
             //Question 6
             {

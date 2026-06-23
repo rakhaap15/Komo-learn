@@ -11,8 +11,6 @@ type Props ={
     hasActiveSubscription: boolean;
 };
 
-
-
 export const UserProgress = ({ 
     activeCourse, 
     points, 

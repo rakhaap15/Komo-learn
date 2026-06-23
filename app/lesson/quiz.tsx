@@ -148,14 +148,10 @@ export const Quiz = ({
   const onContinue = () => {
     if (!challenge) return;
 
-
-  console.log("CLICK");
-
   // =========================
   // STEP 2 → NEXT
   // =========================
   if (status === "correct") {
-    console.log("➡️ NEXT QUESTION");
     setStatus("none");
     setSelectedOption(undefined);
     setUserAnswer("");
@@ -164,11 +160,15 @@ export const Quiz = ({
   }
 
   if (status === "wrong") {
-    console.log("🔁 RESET WRONG");
-    setStatus("none");
-    setSelectedOption(undefined);
-    return;
-  }
+
+  setStatus("none");
+  setSelectedOption(undefined);
+  setUserAnswer("");
+
+  setActiveIndex((prev) => prev + 1);
+
+  return;
+}
 
   // =========================
   // STEP 1 → CHECK
@@ -186,42 +186,68 @@ export const Quiz = ({
       normalize(userAnswer).includes(normalize(ans))
     );
 
-    console.log("isCorrect INPUT:", isCorrect);
-
     if (isCorrect) {
-      console.log("✅ TAMBAH SCORE INPUT");
       setCorrectCount((prev) => prev + 1);
       setPercentage((prev) => prev + 100 / challenges.length);
       setStatus("correct");
-      // tambah points saat jawaban benar
       addPoints(10).catch(() => {});
 
     } else {
-      console.log("❌ SALAH INPUT");
       setHearts((prev) => Math.max(prev - 1, 0));
       setStatus("wrong");
     }
+    const questionTime = Math.floor(
+  (Date.now() - questionStartAtRef.current) / 1000
+);
 
+  setAttemptRows((prev) => [
+    ...prev,
+    {
+      index: activeIndex,
+      challengeId: challenge.id,
+      type: challenge.type,
+      isCorrect,
+      timeSpent: questionTime,
+      userAnswer,
+      correctAnswer: correctAnswers.join(", "),
+    },
+  ]);
     return;
   }
 
   // SELECT
   if (!selectedOption) {
-    console.log("❌ selectedOption kosong");
     return;
   }
 
   const correctOption = options.find((o) => o.correct);
 
   if (!correctOption) {
-    console.log("❌ TIDAK ADA correctOption");
     return;
   }
 
-  console.log("COMPARE:", selectedOption, correctOption.id);
+  const questionTime = Math.floor(
+  (Date.now() - questionStartAtRef.current) / 1000
+  );
+
+  const selectedOptionData = options.find(
+    (o) => o.id === selectedOption
+  );
+
+  setAttemptRows((prev) => [
+    ...prev,
+    {
+      index: activeIndex,
+      challengeId: challenge.id,
+      type: challenge.type,
+      isCorrect: selectedOption === correctOption.id,
+      timeSpent: questionTime,
+      userAnswer: selectedOptionData?.text ?? "-",
+      correctAnswer: correctOption.text ?? "-",
+    },
+  ]);
 
   if (selectedOption === correctOption.id) {
-    console.log("✅ TAMBAH SCORE SELECT");
     setCorrectCount((prev) => prev + 1);
     setPercentage((prev) => prev + 100 / challenges.length);
     setStatus("correct");
@@ -229,7 +255,6 @@ export const Quiz = ({
     addPoints(10).catch(() => {});
 
   } else {
-    console.log("❌ SALAH SELECT");
     setHearts((prev) => Math.max(prev - 1, 0));
     setStatus("wrong");
   }
@@ -245,18 +270,37 @@ export const Quiz = ({
   const level = getLevel(score, timeSpent);
 
   useEffect(() => {
-    if (!challenge && !savedRef.current) {
-      savedRef.current = true;
+  if (
+    !challenge &&
+    !savedRef.current &&
+    attemptRows.length === totalQuestions
+  ) {
+    savedRef.current = true;
 
-      saveResult({
+    saveResult({
       score,
       timeSpent,
       correctCount,
       totalQuestions,
       level,
-});
-    }
-  }, [challenge]);
+      questions: attemptRows.map((row) => ({
+        questionId: row.challengeId,
+        timeSpent: row.timeSpent,
+        isCorrect: row.isCorrect,
+        userAnswer: row.userAnswer,
+        correctAnswer: row.correctAnswer,
+      })),
+    });
+  }
+}, [
+  challenge,
+  attemptRows,
+  score,
+  timeSpent,
+  correctCount,
+  totalQuestions,
+  level,
+]);
 
   // =========================
     // FINISH SCREEN

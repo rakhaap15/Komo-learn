@@ -10,10 +10,15 @@ function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
 }
 
-function SheetTrigger({
-  ...props
-}: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
-  return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />
+function SheetTrigger(
+  props: React.ComponentProps<typeof SheetPrimitive.Trigger>
+) {
+  return (
+    <SheetPrimitive.Trigger
+      data-slot="sheet-trigger"
+      {...props}
+    />
+  )
 }
 
 function SheetClose({
@@ -127,6 +132,7 @@ function SheetDescription({
   )
 }
 
+
 export {
   Sheet,
   SheetTrigger,
@@ -135,5 +141,5 @@ export {
   SheetHeader,
   SheetFooter,
   SheetTitle,
-  SheetDescription,
+  SheetDescription
 }

@@ -1,3 +1,10 @@
+import {
+  getUserProgress,
+  getUserSubscription,
+  getUserReport,
+  getUserReportHistory,
+} from "@/db/queries";
+
 import { FeedWrapper } from "@/components/feed-wrapper";
 import { StickyWrapper } from "@/components/sticky-wrapper";
 import { Promo } from "@/components/promo";
@@ -5,140 +12,246 @@ import { Quest } from "@/components/quest";
 import { UserProgress } from "@/components/user-progress";
 import { Separator } from "@/components/ui/separator";
 
-import {
-  getUserProgress,
-  getUserSubscription,
-  getUserReport,
-} from "@/db/queries";
-
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { PrintButton } from "./print-button";
 
-const ReportPage = async () => {
-  const userProgressData = getUserProgress();
-  const userSubscriptionData = getUserSubscription();
-  const reportData = getUserReport();
+import { Report, ReportAnalysis, ReportHistoryItem } from "./types";
+import { analyzeReport } from "./analysis";
+import { Button } from "@/components/ui/button";
 
-  const [userProgress, userSubscription, report] = await Promise.all([
-    userProgressData,
-    userSubscriptionData,
-    reportData,
+type SearchParams = {
+  date?: string;
+  testResultId?: string;
+  type?: "time" | "score" | "analysis" | "recommendation";
+  from?: string;
+  to?: string;
+};
+
+interface Props {
+  searchParams: Promise<SearchParams>;
+}
+
+const ReportPage = async ({ searchParams }: Props) => {
+  const { date, type, from, to, testResultId } = await searchParams;
+
+  //PROMISES
+  const userProgressPromise = getUserProgress();
+  const userSubscriptionPromise = getUserSubscription();
+
+
+  const historyPromise: Promise<ReportHistoryItem[] | null> =
+    from && to
+      ? getUserReportHistory(from, to)
+      : getUserReportHistory("1900-01-01", "2100-01-01");
+
+  const [userProgress, userSubscription, history] = await Promise.all([
+    userProgressPromise,
+    userSubscriptionPromise,
+    historyPromise,
   ]);
 
-  if (!userProgress || !userProgress.activeCourse) {
+  //GUARD
+  if (!userProgress?.activeCourse) {
     redirect("/courses");
   }
 
   const isPro = !!userSubscription?.isActive;
 
-  // ✅ HANDLE NULL REPORT
-  if (!report) {
-    return (
-      <FeedWrapper>
-        <div className="w-full flex flex-col items-center justify-center py-20">
-          <p className="text-muted-foreground">
-            Belum ada data laporan.
-          </p>
-        </div>
-      </FeedWrapper>
+  //REPORT LOGIC
+  let report: Report | null = null;
+  
+
+  if (date) {
+    const reportItem = history?.find(
+      (h) =>
+        new Date(h.date)
+          .toISOString()
+          .split("T")[0] === date
     );
+    if (reportItem) {
+      report = await getUserReport(reportItem.id);
+    }
   }
 
+  if (!report) {
+    const latestId = history?.[history.length - 1]?.id;
+
+    if (latestId) {
+      report = await getUserReport(latestId);
+    }
+  }
+  const analysis: ReportAnalysis | null = report
+    ? analyzeReport(report)
+    : null;
+
+  //RENDER
+  const renderReport = () => {
+    if (!report || !analysis) return null;
+
+    switch (type) {
+      case "time":
+        return (
+          <div>
+            <h2 className="font-bold text-lg mb-4">
+              Time Efficiency Report
+            </h2>
+
+            <p>Total Time: {report.timeSpent}s</p>
+
+            {(report.questions ?? []).map((q, i) => (
+              <div key={q.id} className="p-2 border rounded">
+                Q{i + 1}: {q.timeSpent}s
+              </div>
+            ))}
+          </div>
+        );
+
+      case "score":
+        return (
+          <div>
+            <h2 className="font-bold text-lg mb-4">
+              Accuracy Breakdown
+            </h2>
+
+            <p>Score: {report.score}</p>
+            <p>Accuracy: {analysis.accuracy.toFixed(1)}%</p>
+
+            {(report.questions ?? []).map((q, i) => (
+              <div
+                key={q.id}
+                className={`p-2 border rounded ${
+                  q.isCorrect ? "bg-green-100" : "bg-red-100"
+                }`}
+              >
+                Q{i + 1}: {q.isCorrect ? "Correct" : "Wrong"}
+              </div>
+            ))}
+          </div>
+        );
+
+      case "analysis":
+        return (
+          <div>
+            <h2 className="font-bold text-lg mb-4">
+              Cognitive Performance
+            </h2>
+
+            <p>Avg Time: {analysis.avgTime.toFixed(2)}s</p>
+            <p>Slow Answers: {analysis.slowCount}</p>
+
+            <p className="font-semibold mt-4">Weak Topics:</p>
+
+            <ul className="list-disc ml-5">
+              {analysis.weakTopics.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
+          </div>
+        );
+
+      case "recommendation":
+        return (
+          <div>
+            <h2 className="font-bold text-lg mb-4">
+              Adaptive Learning Path
+            </h2>
+
+            <p>Weak Answers: {analysis.weakCount}</p>
+
+            <ul className="list-disc ml-5">
+              {analysis.weakTopics.map((t) => (
+                <li key={t}>Focus on {t}</li>
+              ))}
+            </ul>
+
+            <p className="mt-4 font-semibold">Next Step:</p>
+
+            <p>
+              {analysis.weakCount > 3
+                ? "Review fundamentals first"
+                : "Keep learning, never settle for less 🚀"}
+            </p>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  //UI
   return (
     <div className="flex flex-row-reverse gap-[48px] px-6">
-      {/* SIDEBAR */}
-      <StickyWrapper className="no-print">
+      <StickyWrapper>
         <UserProgress
           activeCourse={userProgress.activeCourse}
           hearts={userProgress.hearts}
-          points={userProgress.points}
+          points={userProgress.points ?? 0}
           hasActiveSubscription={isPro}
         />
+
         <Promo />
-        <Quest points={userProgress.points} />
+        <Quest points={userProgress.points ?? 0} />
       </StickyWrapper>
 
-      {/* MAIN */}
       <FeedWrapper>
-        <div id="report-content" className="w-full flex flex-col items-center">
-          <Image src="/report.svg" alt="Report" height={90} width={90} />
+        <div className="w-full flex flex-col items-center">
+          <Image src="/report.svg" alt="Report" width={90} height={90} />
 
-          <h1 className="text-center font-bold text-2xl my-6">
-            Report
-          </h1>
+          
+          <h1 className="text-2xl font-bold my-6">Report</h1> 
+           <p className="text-muted-foreground text-center text-lg mb-6">
+                        Review your test results and proficiency progress.
+                    </p>
+          {/* FILTER */}
+          <form
+            method="GET"
+            action="/laporan"
+            className="w-full max-w-md flex flex-col gap-4 mb-8"
+          >
 
-          <p className="text-muted-foreground text-center mb-6">
-            Review your personal performance and track your progress over time.
-          </p>
+            <select
+              name="type"
+              defaultValue={type}
+              className="border p-3 rounded"
+            >
+              <option value="time">Time</option>
+              <option value="score">Score</option>
+              <option value="analysis">Analysis</option>
+              <option value="recommendation">Recommendation</option>
+            </select>
 
-          {/* ======================
-              LAPORAN 1 - WAKTU
-          ====================== */}
-          <div className="w-full mb-8">
-            <h2 className="font-bold text-lg mb-4">
-              Laporan 1: Waktu
-            </h2>
+            <input
+              type="date"
+              name="date"
+              defaultValue={date}
+              className="border p-3 rounded"
+            />
 
-            <p className="mb-2">
-              Total Waktu:{" "}
-              <span className="font-semibold">
-                {report.totalTime} detik
-              </span>
-            </p>
+            <Button variant="primary" type="submit" >
+              Generate
+            </Button>
+          </form>
 
-            <div className="space-y-2">
-              {report.questions.map((q, index) => (
-                <div
-                  key={q.id}
-                  className="p-3 rounded-lg border flex justify-between"
-                >
-                  <p>Soal {index + 1}</p>
-                  <p>{q.timeSpent} detik</p>
-                </div>
-              ))}
+          {/* CONTENT */}
+          {!report || !analysis ? (
+            <p>No report found</p>
+          ) : (
+            <div className="w-full max-w-3xl">
+              {renderReport()}
+
+              <Separator className="my-6" />
+
+              <PrintButton
+                report={report}
+                type={type}
+                analysis={analysis}
+                history={history}
+              />
             </div>
-          </div>
-
-          <Separator className="mb-6 w-full" />
-
-          {/* ======================
-              LAPORAN 2 - NILAI
-          ====================== */}
-          <div className="w-full">
-            <h2 className="font-bold text-lg mb-4">
-              Laporan 2: Nilai
-            </h2>
-
-            <p className="mb-2">
-              Total Nilai:{" "}
-              <span className="font-semibold">
-                {report.score}
-              </span>
-            </p>
-
-            <p className="mb-4">
-              Benar: {report.correctCount} / {report.totalQuestions}
-            </p>
-
-            <div className="space-y-2">
-              {report.questions.map((q, index) => (
-                <div
-                  key={q.id}
-                  className={`p-3 rounded-lg border flex justify-between ${
-                    q.isCorrect ? "bg-green-100" : "bg-red-100"
-                  }`}
-                >
-                  <p>Soal {index + 1}</p>
-                  <p>{q.isCorrect ? "Benar" : "Salah"}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          )}
         </div>
-        {/* ✅ CLIENT BUTTON */}
-          <PrintButton />
-                <Separator className="mb-6 w-1/2 mx-auto" />
       </FeedWrapper>
     </div>
   );

@@ -26,6 +26,7 @@ export const LessonButton = ({
     current,
     percentage
 }: Props) => {
+    //inin kalo mau dipecah berbagai level (next life cycle)
     /*const cycleLength = 8;
     const cycleIndex = index % cycleLength;
 

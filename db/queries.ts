@@ -10,8 +10,10 @@ import {
     userSubscription,
     testResults,
     questionResults,
+    userReport,
 } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { and, eq, gte, lte, desc } from "drizzle-orm";
+import { ReportHistoryItem } from "@/app/(main)/laporan/types";
 
 
 export const getUserProgress = cache(async () => {
@@ -263,37 +265,84 @@ export const getTopTenUser = cache(async () => {
     return data;
 });
 
-export const getUserReport = async () => {
+export const getUserReportHistory = async (
+  from: string,
+  to: string
+): Promise<ReportHistoryItem[]> => {
+  const { userId } = await auth();
+
+  if (!userId) return [];
+
+  const data = await db.query.testResults.findMany({
+    where: and(
+      eq(testResults.userId, userId),
+      gte(testResults.date, from),
+      lte(testResults.date, to)
+    ),
+    orderBy: (t, { asc }) => [asc(t.date)],
+  });
+
+  return data.map((r) => ({
+    id: r.id, // ✅ ID report (INI YANG DIPAKAI DI REPORT PAGE)
+    name: r.name,
+    date: r.date,
+    score: r.score,
+    accuracy:
+      r.totalQuestions === 0
+        ? 0
+        : (r.correctCount / r.totalQuestions) * 100,
+  }));
+};
+
+export const getUserReport = async (testResultId: number) => {
+  const result = await db.query.questionResults.findMany({
+    where: eq(questionResults.testResultId, testResultId),
+    with: {
+      challenge: true,
+    },
+  });
+  const testResult = await db.query.testResults.findFirst({
+  where: eq(testResults.id, testResultId),
+  });
+
+  if (!result || result.length === 0) return null;
+
+  const totalTime = result.reduce((a, b) => a + (b.timeSpent ?? 0), 0);
+  const correctCount = result.filter((r) => r.isCorrect).length;
+
+  return {
+    name: testResult?.name ?? "Anonymous",
+    score: correctCount * 10,
+    timeSpent: totalTime,
+    correctCount,
+    totalQuestions: result.length,
+
+    questions: result.map((q) => ({
+      id: q.id,
+      timeSpent: q.timeSpent ?? 0,
+      isCorrect: q.isCorrect ?? false,
+      question: q.challenge?.question ?? "Unknown question",
+      userAnswer: String(q.userAnswer ?? 0),
+      correctAnswer: String(q.correctAnswer ?? false),
+    })),
+  };
+};
+
+export const getUserReportByDate = async (
+  date: string
+) => {
   const { userId } = await auth();
 
   if (!userId) return null;
 
-  // 1. Ambil test terakhir
-  const latestTest = await db.query.testResults.findFirst({
-    where: eq(testResults.userId, userId),
-    orderBy: desc(testResults.id),
+  const test = await db.query.testResults.findFirst({
+    where: and(
+      eq(testResults.userId, userId),
+      eq(testResults.date, date)
+    ),
   });
 
-  if (!latestTest) return null;
+  if (!test) return null;
 
-  // 2. Ambil detail soal
-  const questions = await db
-    .select()
-    .from(questionResults)
-    .where(eq(questionResults.testResultId, latestTest.id));
-
-  // 3. Return format
-  return {
-    totalTime: latestTest.timeSpent,
-    score: latestTest.score,
-    correctCount: latestTest.correctCount,
-    totalQuestions: latestTest.totalQuestions,
-    questions: questions.map(
-      (q: typeof questionResults.$inferSelect) => ({
-        id: q.id,
-        timeSpent: q.timeSpent,
-        isCorrect: q.isCorrect,
-      })
-    ),
-  };
+  return getUserReport(test.id);
 };

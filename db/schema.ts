@@ -1,5 +1,5 @@
-import { relations } from "drizzle-orm";
-import { boolean, integer, pgEnum, pgTable, serial, text, timestamp, } from "drizzle-orm/pg-core";
+import { relations, sql } from "drizzle-orm";
+import { boolean, integer, pgEnum, pgTable, serial, text, timestamp, real } from "drizzle-orm/pg-core";
 
 export const courses = pgTable("courses", {
     id: serial("id").primaryKey(),
@@ -143,12 +143,45 @@ export const testResults = pgTable("test_results", {
   totalQuestions: integer("total_questions").notNull(),
   level: text("level").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
+  date: text("date").notNull(),
 });
 
-export const questionResults = pgTable("quest_results", {
+export const questionResults = pgTable("question_results", {
   id: serial("id").primaryKey(),
-  testResultId: integer("test_result_id").notNull(),
+  testResultId: integer("test_result_id")
+    .notNull()
+    .references(() => testResults.id, { onDelete: "cascade" }),
   questionId: integer("question_id").notNull(),
   timeSpent: integer("time_spent").notNull(),
   isCorrect: boolean("is_correct").notNull(),
+  userAnswer: text("user_answer"),
+  correctAnswer: text("correct_answer"),
 });
+
+export const userReport = pgTable("user_report", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  date: timestamp("date").notNull(),
+  score: integer("score").notNull(),
+  accuracy: real("accuracy").notNull(),
+});
+
+export const testResultsRelations = relations(testResults, ({ many }) => ({
+  questions: many(questionResults),
+}));
+
+export const questionResultsRelations = relations(
+  questionResults,
+  ({ one }) => ({
+    test: one(testResults, {
+      fields: [questionResults.testResultId],
+      references: [testResults.id],
+    }),
+
+    // ✅ INI FIX UTAMA
+    challenge: one(challenges, {
+      fields: [questionResults.questionId],
+      references: [challenges.id],
+    }),
+  })
+);
