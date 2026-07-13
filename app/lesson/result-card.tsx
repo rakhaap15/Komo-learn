@@ -35,6 +35,17 @@ export const ResultCard = ({ value, variant }: Props) => {
             ? "text-[#3B82F6]"
             : "text-[#8B5CF6]";
 
+     const getTimeLevel = (time: number) => {
+        if (time <= 5) return "Fast";
+        if (time <= 10) return "Moderate";
+        return "Slow";
+    };
+
+    const displayValue =
+        variant === "time"
+            ? getTimeLevel(Number(value))
+            : value;
+
     return (
         <div className={cn("rounded-2xl border-2 w-full", bgColor)}>
             {/* HEADER */}
@@ -62,7 +73,7 @@ export const ResultCard = ({ value, variant }: Props) => {
                     className="mr-1.5"
                 />
 
-                {variant === "time" ? `${value} min` : value}
+                {displayValue}
             </div>
         </div>
     );

@@ -14,6 +14,7 @@ export type Report = {
   correctCount: number;
   totalQuestions: number;
   questions: QuestionReport[];
+  level: string;
 };
 
 export type ReportAnalysis = {

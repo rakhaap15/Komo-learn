@@ -313,6 +313,7 @@ export const getUserReport = async (testResultId: number) => {
   return {
     name: testResult?.name ?? "Anonymous",
     score: correctCount * 10,
+    level: testResult?.level ?? "-",
     timeSpent: totalTime,
     correctCount,
     totalQuestions: result.length,
