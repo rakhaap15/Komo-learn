@@ -114,7 +114,7 @@ const main = async () => {
                 imageSrc:'/vocab/teacher.svg',
                 question: 'Meaning of "teacher":....',
             },
-            /*
+
             {
                 id: 6,
                 lessonsId: 1, //vocab
@@ -625,7 +625,7 @@ const main = async () => {
                 passage:'The meeting has been postponed until next week due to unexpected problems. All participants will be informed about the new schedule soon.',
                 question: 'What happened to the meeting?',
             },
-            */
+
         ]);
 
         //answer
@@ -714,7 +714,6 @@ const main = async () => {
                 correct: false,
                 text: "Driver",
             },
-            /*
 
             //Question 6
             {
@@ -1353,7 +1352,6 @@ const main = async () => {
                 correct: true,
                 text: "It was delayed",
             },
-            */
         ]);
 
         console.log("Seeding finish");
