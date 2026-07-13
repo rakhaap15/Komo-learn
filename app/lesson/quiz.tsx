@@ -32,7 +32,6 @@ type Props = {
     completed: boolean;
     challengeOptions: typeof challengeOptions.$inferSelect[];
   })[];
-  // legacy prop dari beberapa halaman (tidak dipakai di komponen ini)
 };
 
 function getLevel(score: number, time: number) {
