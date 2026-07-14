@@ -1,4 +1,4 @@
-<h1 align="center">🚀 Komo Learn</h1>
+<h1 align="center"> Komo Learn</h1>
 
 <p align="center">
   🧠 Smart English Learning Platform powered by Fuzzy Logic
@@ -204,8 +204,8 @@ npm run dev
 
 ## ⭐ Support
 
-Kalau project ini membantu:
-👉 Kasih ⭐ di repository ya!
+Kalau project ini membantu:<br>
+Kasih ⭐ di repository ya!
 
 ---
 
