@@ -1,13 +1,32 @@
-# 🚀 Komo Learn
-<p align="center"> <a href="https://komo-learn.vercel.app"> <img src="https://img.shields.io/badge/Live-Demo-green?style=for-the-badge&logo=vercel" /> </a> <img src="https://img.shields.io/badge/Next.js-13+-black?style=for-the-badge&logo=next.js" /> <img src="https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript" /> <img src="https://img.shields.io/badge/Database-PostgreSQL-blue?style=for-the-badge&logo=postgresql" /> <img src="https://img.shields.io/badge/Auth-Clerk-purple?style=for-the-badge" /> <img src="https://img.shields.io/badge/ORM-Drizzle-orange?style=for-the-badge" /> </p>
+<h1 align="center">🚀 Komo Learn</h1>
 
-### 🧠 Smart English Learning Platform with Fuzzy Logic
+<p align="center">
+  🧠 Smart English Learning Platform powered by Fuzzy Logic
+</p>
 
-👉 https://komo-learn.vercel.app
+<p align="center">
+  <a href="https://komo-learn.vercel.app">
+    <img src="https://img.shields.io/badge/Live-Demo-00C853?style=for-the-badge&logo=vercel&logoColor=white" />
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-13-black?style=for-the-badge&logo=next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript" />
+  <img src="https://img.shields.io/badge/PostgreSQL-Neon-blue?style=for-the-badge&logo=postgresql" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Auth-Clerk-purple?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/ORM-Drizzle-orange?style=for-the-badge" />
+</p>
+
+
+<p align="center">https://komo-learn.vercel.app</p>
 
 ---
 
-📸 UI Preview
+## 📸 UI Preview
 <p align="center">
   <img src="public/home.png" width="400"/>
   <img src="public/leaderboard.png" width="400"/>
