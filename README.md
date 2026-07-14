@@ -1,36 +1,195 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Komo Learn
+<p align="center"> <a href="https://komo-learn.vercel.app"> <img src="https://img.shields.io/badge/Live-Demo-green?style=for-the-badge&logo=vercel" /> </a> <img src="https://img.shields.io/badge/Next.js-13+-black?style=for-the-badge&logo=next.js" /> <img src="https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript" /> <img src="https://img.shields.io/badge/Database-PostgreSQL-blue?style=for-the-badge&logo=postgresql" /> <img src="https://img.shields.io/badge/Auth-Clerk-purple?style=for-the-badge" /> <img src="https://img.shields.io/badge/ORM-Drizzle-orange?style=for-the-badge" /> </p>
 
-## Getting Started
+### 🧠 Smart English Learning Platform with Fuzzy Logic
 
-First, run the development server:
+👉 https://komo-learn.vercel.app
+
+---
+
+📸 UI Preview
+<p align="center">
+  <img src="public/home.png" width="400"/>
+  <img src="public/leaderboard.png" width="400"/>
+</p>
+
+<p align="center">
+  <img src="public/learn.png" width="400"/>
+  <img src="public/quest.png" width="400"/>
+</p>
+
+<p align="center">
+  <img src="public/report.png" width="400"/>
+</p>
+
+---
+
+## 📖 About The Project
+
+**Komo Learn** adalah platform pembelajaran Bahasa Inggris berbasis web yang menggabungkan:
+
+* ✨ Interactive Learning
+* 🧠 Fuzzy Mamdani Logic
+* 📊 Smart Performance Analysis
+
+🎯 **Tujuan utama:**
+Menentukan level kemampuan user secara **adaptif & akurat**, bukan sekadar nilai.
+
+---
+
+## ⚡ Key Features
+
+### 📚 Learning System
+
+* Vocabulary
+* Listening (Audio-based)
+* Reading
+* Grammar
+
+### 🧠 Smart Level Detection
+
+* Menggunakan **Fuzzy Mamdani**
+* Parameter:
+
+  * Score
+  * Time
+  * Accuracy
+
+### 🎯 Quiz Engine
+
+* Assist Mode
+* Auto progression *(tanpa blokir jawaban salah)*
+
+### 📊 Report System
+
+* History test
+* Analisis performa
+* Rekomendasi belajar
+
+### 🖨️ PDF Export
+
+* Multi-page report
+* Header & footer
+* Page number
+
+### 🔐 Authentication
+
+* Clerk Auth *(secure login)*
+
+---
+
+## 🧠 Fuzzy Logic System
+
+**Input:**
+
+* Score (0–100)
+* Time (seconds)
+* Accuracy (%)
+
+**Output:**
+
+* Basic
+* Intermediate
+* Advanced
+
+📌 **Contoh:**
+
+```
+Score = 90
+Time = 620
+Accuracy = 88
+
+➡️ Result: ADVANCED
+```
+
+---
+
+## 🏗️ Tech Stack
+
+| Layer    | Tech                       |
+| -------- | -------------------------- |
+| Frontend | Next.js, React, TypeScript |
+| Styling  | Tailwind CSS               |
+| Backend  | Next.js Server Actions     |
+| Database | PostgreSQL (Neon)          |
+| ORM      | Drizzle ORM                |
+| Auth     | Clerk                      |
+| PDF      | jsPDF, html2canvas         |
+
+---
+
+## 📂 Project Structure
+
+```
+komo-learn/
+│── app/
+│   ├── (main)
+│   ├── laporan
+│   ├── lesson
+│
+│── components/
+│── db/
+│   ├── schema.ts
+│   ├── queries.ts
+│
+│── public/
+│── lib/
+│── types/
+```
+
+---
+
+## ⚙️ Getting Started
+
+### 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/username/komo-learn.git
+cd komo-learn
+```
+
+### 2️⃣ Install Dependencies
+
+```bash
+npm install
+```
+
+### 3️⃣ Setup Environment Variables
+
+```env
+DATABASE_URL=
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+```
+
+### 4️⃣ Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎯 Roadmap
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* 📈 Progress Chart (visual analytics)
+* 🤖 AI Recommendation
+* 🌍 Multi-language support
+---
 
-## Learn More
+## 👨‍💻 Author
 
-To learn more about Next.js, take a look at the following resources:
+**Rakha Alif Prayogi**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ⭐ Support
 
-## Deploy on Vercel
+Kalau project ini membantu:
+👉 Kasih ⭐ di repository ya!
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 License
+
+MIT License
