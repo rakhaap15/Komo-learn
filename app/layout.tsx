@@ -5,6 +5,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ExitModal } from "@/components/modals/exit-modal";
 import { HeartsModal } from "@/components/modals/hearts-modal";
+import { Analytics } from "@vercel/analytics/next";
 
 const font = Nunito({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           <ExitModal />
           <HeartsModal />
         {children}
+        <Analytics />
       </body>
     </html>
     </ClerkProvider>
