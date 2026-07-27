@@ -519,7 +519,7 @@ const generateRecommendationReport = () => {
       );
     }
 
-    pdf.save(`${(type ?? "report").toLowerCase()}-komolearn.pdf`);
+    pdf.save(`${(type ?? "report").toLowerCase()}-sinaulearn.pdf`);
   }, [report, analysis, type]);
 
   return (

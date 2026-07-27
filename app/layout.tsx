@@ -9,8 +9,8 @@ import { HeartsModal } from "@/components/modals/hearts-modal";
 const font = Nunito({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Komolearn",
-  description: "Komolearn Copyrights 2026.",
+  title: "Sinaulearn | English Ability Assessment System",
+  description: "Sinaulearn Copyrights 2026.",
 };
 
 export default function RootLayout({
