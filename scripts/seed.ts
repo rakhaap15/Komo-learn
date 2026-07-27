@@ -87,6 +87,7 @@ const main = async () => {
                 imageSrc:'/vocab/book.svg',
                 question: 'What is "book"?',
             },
+            
             {
                 id: 3,
                 lessonsId: 1, //vocab
@@ -114,7 +115,6 @@ const main = async () => {
                 imageSrc:'/vocab/teacher.svg',
                 question: 'Meaning of "teacher":....',
             },
-
             {
                 id: 6,
                 lessonsId: 1, //vocab
@@ -187,6 +187,7 @@ const main = async () => {
                 imageSrc:'/vocab/rapid.svg',
                 question: '"Rapid" means:....',
             },
+            
             {
                 id: 14,
                 lessonsId: 1, //vocab
@@ -205,6 +206,7 @@ const main = async () => {
                 imageSrc:'/vocab/increase.svg',
                 question: '"Increase" means:....',
             },
+            
             {
                 id: 16,
                 lessonsId: 1, //grammar
@@ -221,6 +223,7 @@ const main = async () => {
                 order: 17,
                 question: 'I ___ happy.',
             },
+            
             {
                 id: 18,
                 lessonsId: 1, //grammar
@@ -325,7 +328,7 @@ const main = async () => {
                 order: 30,
                 question: 'By next year, I ___ graduated.',
             },
-
+            
             {
                 id: 31,
                 lessonsId: 1, //listening
@@ -345,7 +348,7 @@ const main = async () => {
                 audioSrc:'listening/she is my sister.mp3',
                 question: 'who is She?',
             },
-
+            
             {
                 id: 33,
                 lessonsId: 1, //listening
@@ -475,7 +478,7 @@ const main = async () => {
                 audioSrc:'listening/by 2025, i will have completed mu studies.mp3',
                 question: 'what will i finish by 2025?',
             },
-
+            
             {
                 id: 46,
                 lessonsId: 1, //reading
@@ -495,7 +498,7 @@ const main = async () => {
                 passage:'Lisa has a cat named Mimi. The cat is white and very cute. Every day, Lisa gives food to Mimi and plays with her in the afternoon.',
                 question: 'What animal does Lisa have?',
             },
-
+            
             {
                 id: 48,
                 lessonsId: 1, //reading
@@ -632,6 +635,7 @@ const main = async () => {
         await db.insert(schema.challengeOptions).values([
 
             //Question 1
+            
             {
                 challengeId: 1, 
                 correct: true,
@@ -663,7 +667,7 @@ const main = async () => {
                 correct: false,
                 text: "Drink",
             },
-
+            
             //Question 3
             {
                 challengeId: 3, 
@@ -884,7 +888,7 @@ const main = async () => {
                 correct: false,
                 text: "Stop",
             },
-
+            
             //Question 16
             {
                 challengeId: 16, 
@@ -918,7 +922,7 @@ const main = async () => {
                 correct: false,
                 text: "are",
             },
-
+            
             //Question 18
             {
                 challengeId: 18, 
@@ -1139,7 +1143,7 @@ const main = async () => {
                 correct: false,
                 text: "had",
             },
-
+            
             //Question 31
             {
                 challengeId: 31, 
@@ -1153,7 +1157,7 @@ const main = async () => {
                 correct: true,
                 text: "Sister",
             },
-
+            
             //Question 33
             {
                 challengeId: 33, 
@@ -1247,7 +1251,7 @@ const main = async () => {
                 correct: true,
                 text: "Completed studies",
             },
-
+            
             //Question 46
             {
                 challengeId: 46, 
@@ -1261,7 +1265,7 @@ const main = async () => {
                 correct: true,
                 text: "A cat",
             },
-
+            
             //Question 48
             {
                 challengeId: 48, 
@@ -1352,6 +1356,7 @@ const main = async () => {
                 correct: true,
                 text: "It was delayed",
             },
+            
         ]);
 
         console.log("Seeding finish");

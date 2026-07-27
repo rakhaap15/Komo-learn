@@ -73,7 +73,7 @@ export const PrintButton = ({
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(18);
 
-    pdf.text("KOMOLEARN REPORT", pageWidth / 2, 18, {
+    pdf.text("SINAULEARN REPORT", pageWidth / 2, 18, {
       align: "center",
     });
 
@@ -271,6 +271,13 @@ y += 6;
   y
   );
 
+  pdf.text(
+  `Generated : ${new Date().toLocaleDateString()}`,
+  pageWidth - margin,
+  y,
+  { align: "right" }
+);
+
   y += 10;
 
   line(y);
@@ -340,6 +347,13 @@ const generateAnalysisReport = () => {
   pdf.text(`Accuracy : ${analysis.accuracy.toFixed(1)}%`, margin, y);
 
   y += 6;
+
+  pdf.text(
+  `Generated : ${new Date().toLocaleDateString()}`,
+  pageWidth - margin,
+  y,
+  { align: "right" }
+);
 
   pdf.text(
     `Correct : ${totalCorrect}`,
@@ -434,6 +448,13 @@ const generateRecommendationReport = () => {
     margin,
     y
   );
+
+  pdf.text(
+  `Generated : ${new Date().toLocaleDateString()}`,
+  pageWidth - margin,
+  y,
+  { align: "right" }
+);
 
   y += 12;
 
